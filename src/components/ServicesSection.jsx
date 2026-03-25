@@ -104,7 +104,7 @@ export default function HomeAbout() {
           <div style={S.imageCol} className="ha-image-col">
             <div style={S.imageWrapper}>
               <img
-                src="https://paradisefamilytrust.org/assets/img/real-estate/aboutus.png"
+                src={aboutImg}
                 alt="About Paradise Family Trust"
                 style={S.mainImage}
               />

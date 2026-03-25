@@ -1,0 +1,93 @@
+/* ============================================================
+   PARADISE FAMILY TRUST — Global Design System
+   ALL colors, fonts, spacing live here.
+   Change one variable here = changes everywhere.
+   ============================================================ */
+
+/* Replace the @import line at the very top of index.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+/* PASTE THIS into src/index.css — replaces the :root block */
+:root {
+  /* ── Brand colours — matches your live site ── */
+  --color-primary:       #2563EB;   /* blue buttons */
+  --color-primary-dark:  #1B3A6B;   /* hover state */
+  --color-primary-light: #EBF2FF;   /* tinted backgrounds */
+  --color-accent:        #F5A623;   /* gold stars, highlights */
+
+  /* ── Backgrounds ── */
+  --color-bg:            #F4F6F9;   /* light grey page bg */
+  --color-bg-card:       #FFFFFF;
+  --color-bg-dark:       #0A1628;   /* your hero navy */
+  --color-bg-navy:       #1B3A6B;   /* mid navy sections */
+
+  /* ── Text ── */
+  --color-text:          #0A1628;   /* headings — same as hero bg */
+  --color-text-muted:    #4B5563;
+  --color-border:        #E2E8F0;
+
+  /* ── Fonts — same feel as your current site ── */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+
+  /* ── Everything else stays the same ── */
+  --section-padding:  96px 24px;
+  --container-max:    1100px;
+  --radius-sm:        6px;
+  --radius-md:        10px;
+  --radius-lg:        16px;
+  --radius-xl:        24px;
+  --radius-full:      999px;
+  --shadow-sm:        0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md:        0 4px 20px rgba(0,0,0,0.09);
+  --shadow-lg:        0 8px 40px rgba(0,0,0,0.12);
+  --shadow-colored:   0 8px 32px rgba(37,99,235,0.3);
+  --transition:       0.22s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--color-bg); color: var(--color-text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a  { color: inherit; text-decoration: none; }
+
+.container { max-width: var(--container-max); margin: 0 auto; padding: 0 24px; }
+.section { padding: var(--section-padding); }
+.section--dark  { background: var(--color-bg-dark); color: #fff; }
+.section--tinted { background: var(--color-primary-light); }
+
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--color-primary); margin-bottom: 12px; }
+.section-title { font-family: var(--font-display); font-size: clamp(28px, 4vw, 42px); font-weight: 700; color: var(--color-text); line-height: 1.2; margin-bottom: 16px; }
+.section-title span { color: var(--color-primary); }
+.section--dark .section-title { color: #fff; }
+.section-desc { font-size: 16px; color: var(--color-text-muted); max-width: 520px; margin: 0 auto; line-height: 1.75; }
+.section--dark .section-desc { color: rgba(255,255,255,0.65); }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; border-radius: var(--radius-full); font-family: var(--font-body); font-size: 15px; font-weight: 600; cursor: pointer; border: 2px solid transparent; transition: all var(--transition); white-space: nowrap; text-decoration: none; }
+.btn--primary { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+.btn--primary:hover { background: var(--color-primary-dark); border-color: var(--color-primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-colored); }
+.btn--secondary { background: transparent; color: var(--color-primary); border-color: var(--color-primary); }
+.btn--secondary:hover { background: var(--color-primary); color: #fff; transform: translateY(-2px); }
+.btn--white { background: #fff; color: var(--color-primary); border-color: #fff; }
+.btn--white:hover { background: var(--color-primary-light); transform: translateY(-2px); }
+.btn--sm { padding: 10px 22px; font-size: 14px; }
+
+.card { background: var(--color-bg-card); border-radius: var(--radius-lg); border: 1.5px solid var(--color-border); box-shadow: var(--shadow-sm); overflow: hidden; transition: transform var(--transition), box-shadow var(--transition); }
+.card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in   { opacity: 0; animation: fadeInUp 0.6s ease forwards; }
+.fade-in-1 { animation-delay: 0.1s; }
+.fade-in-2 { animation-delay: 0.2s; }
+.fade-in-3 { animation-delay: 0.3s; }
+.fade-in-4 { animation-delay: 0.4s; }
+.fade-in-5 { animation-delay: 0.5s; }
+.fade-in-6 { animation-delay: 0.6s; }
+
+.badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: var(--radius-full); letter-spacing: 0.5px; text-transform: uppercase; }
+.badge--primary { background: var(--color-primary); color: #fff; }
+.badge--light   { background: var(--color-primary-light); color: var(--color-primary-dark); }
+
+.img-placeholder { background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; color: var(--color-primary); font-size: 13px; font-weight: 600; }
+
+@media (max-width: 768px) { :root { --section-padding: 64px 20px; } .btn { padding: 12px 24px; font-size: 14px; } }

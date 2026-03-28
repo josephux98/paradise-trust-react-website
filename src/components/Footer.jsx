@@ -135,7 +135,7 @@ export default function Footer() {
           <div style={S.col1}>
 
             {/* Logo */}
-            <Link to="/" style={S.logoLink} className="footer-logo-text">
+            <Link to="/" style={S.logoLink} className="footer-logo-text" onClick={scrollToTop}>
               Paradise Family <span style={{ color: '#68d391' }}>&amp;</span> Social Welfare Trust
             </Link>
 
@@ -207,6 +207,11 @@ export default function Footer() {
                     to={l.to + (l.hash || '')}
                     style={S.footerLink}
                     className="footer-link"
+                    onClick={() => {
+                      if (!l.hash) {
+                        scrollToTop();
+                      }
+                    }}
                   >
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}>
                       <polyline points="9 18 15 12 9 6"/>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import agent1 from '../assets/img/images/agent-1.jpeg'
-import agent2 from '../assets/img/images/agent-2.jpeg'
+import agent2 from '../assets/img/images/agent-2.jpg'
 import agent3 from '../assets/img/images/agent-3.jpeg'
 import agent4 from '../assets/img/images/agent-4.jpeg'
 

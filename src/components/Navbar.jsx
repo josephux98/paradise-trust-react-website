@@ -18,8 +18,11 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Close mobile menu when route changes
-  const closeMenu = () => setMenuOpen(false)
+  // Close mobile menu and scroll to top on link click
+  const handleLinkClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setMenuOpen(false)
+  }
 
   const links = [
     { to: '/',         label: 'Home'     },
@@ -39,7 +42,7 @@ export default function Navbar() {
           boxShadow: scrolled ? '0 8px 30px rgba(0,0,0,0.08)' : '0 4px 20px rgba(0,0,0,0.05)',
         }}>
           {/* ── LOGO ────────────────────────────── */}
-          <Link to="/" style={S.logo} onClick={closeMenu}>
+          <Link to="/" style={S.logo} onClick={handleLinkClick}>
             <img
               src={logo}
               alt="Paradise Family Trust"
@@ -56,6 +59,7 @@ export default function Navbar() {
                 key={l.to}
                 to={l.to}
                 end={l.to === '/'}
+                onClick={handleLinkClick}
                 style={({ isActive }) => ({
                   ...S.navLink,
                   color: isActive ? '#0B1F3A' : '#333333',
@@ -70,7 +74,7 @@ export default function Navbar() {
 
           {/* ── RIGHT: DONATE + HAMBURGER ───────── */}
           <div style={S.rightGroup}>
-            <Link to="/contact" className="nav-donate-btn desktop-donate-btn" style={S.donateBtn}>
+            <Link to="/contact" className="nav-donate-btn desktop-donate-btn" style={S.donateBtn} onClick={handleLinkClick}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="donate-icon">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
@@ -114,7 +118,7 @@ export default function Navbar() {
                 key={l.to}
                 to={l.to}
                 end={l.to === '/'}
-                onClick={closeMenu}
+                onClick={handleLinkClick}
                 style={({ isActive }) => ({
                   ...S.mobileLink,
                   color: isActive ? '#0B1F3A' : '#333333',
@@ -127,7 +131,7 @@ export default function Navbar() {
             ))}
             <Link
               to="/contact"
-              onClick={closeMenu}
+              onClick={handleLinkClick}
               className="nav-donate-btn"
               style={{ ...S.donateBtn, marginTop: 12 }}
             >

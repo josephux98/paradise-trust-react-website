@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import logo from '../assets/img/trustlogo.png'
 
 // ─────────────────────────────────────────────────────────────
@@ -11,6 +11,8 @@ import logo from '../assets/img/trustlogo.png'
 export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
   const [menuOpen,  setMenuOpen]  = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -22,6 +24,19 @@ export default function Navbar() {
   const handleLinkClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
     setMenuOpen(false)
+  }
+
+  const handleDonateClick = async event => {
+    event.preventDefault()
+    setMenuOpen(false)
+
+    if (location.pathname !== '/') {
+      await navigate('/')
+    }
+
+    requestAnimationFrame(() => {
+      document.getElementById('donate')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }
 
   const links = [
@@ -74,7 +89,7 @@ export default function Navbar() {
 
           {/* ── RIGHT: DONATE + HAMBURGER ───────── */}
           <div style={S.rightGroup}>
-            <Link to="/contact" className="nav-donate-btn desktop-donate-btn" style={S.donateBtn} onClick={handleLinkClick}>
+            <Link to="/" className="nav-donate-btn desktop-donate-btn" style={S.donateBtn} onClick={handleDonateClick}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="donate-icon">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
@@ -130,8 +145,8 @@ export default function Navbar() {
               </NavLink>
             ))}
             <Link
-              to="/contact"
-              onClick={handleLinkClick}
+              to="/"
+              onClick={handleDonateClick}
               className="nav-donate-btn"
               style={{ ...S.donateBtn, marginTop: 12 }}
             >

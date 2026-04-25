@@ -33,7 +33,7 @@ export default function Contact() {
       } else {
         alert("Something went wrong. Please try again.")
       }
-    } catch (error) {
+    } catch {
       alert("Network error. Please check your connection and try again.")
     } finally {
       setLoading(false)

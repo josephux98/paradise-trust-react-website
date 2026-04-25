@@ -1,7 +1,11 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import heroImg from '../assets/img/images/Hero01.png'
 import secondaryImg from '../assets/img/images/secondary_img.png'
+import {
+  createDonationOrder,
+  loadRazorpayCheckout,
+  verifyDonationPayment,
+} from '../lib/razorpay'
 
 export default function Hero() {
   const [form, setForm] = useState({
@@ -9,23 +13,100 @@ export default function Hero() {
   })
   const [submitted, setSubmitted] = useState(false)
   const [activeAmt, setActiveAmt] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [paymentDetails, setPaymentDetails] = useState(null)
 
-  const handle = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+  const handle = event => {
+    const { name, value } = event.target
+
+    setErrorMessage('')
+    setForm(current => ({ ...current, [name]: value }))
+
+    if (name === 'amount') {
+      setActiveAmt('')
+    }
+  }
 
   const pickAmt = val => {
     setActiveAmt(val)
+    setErrorMessage('')
     setForm(f => ({ ...f, amount: val }))
   }
 
-  const submit = e => {
-    e.preventDefault()
-    // TODO: connect Razorpay here
-    setSubmitted(true)
+  const resetDonation = () => {
+    setSubmitted(false)
+    setActiveAmt('')
+    setPaymentDetails(null)
+    setErrorMessage('')
+    setForm({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      amount: '',
+    })
+  }
+
+  const submit = async event => {
+    event.preventDefault()
+    setErrorMessage('')
+    setIsSubmitting(true)
+
+    try {
+      const [order, Razorpay] = await Promise.all([
+        createDonationOrder(form),
+        loadRazorpayCheckout(),
+      ])
+
+      await new Promise((resolve, reject) => {
+        const checkout = new Razorpay({
+          key: order.keyId,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'Paradise Family & Social Welfare Trust',
+          description: 'Secure donation',
+          order_id: order.orderId,
+          prefill: {
+            name: order.donor.name,
+            email: order.donor.email,
+            contact: order.donor.phone,
+          },
+          notes: {
+            donor_name: order.donor.name,
+            donor_email: order.donor.email,
+            donor_phone: order.donor.phone,
+          },
+          theme: {
+            color: '#0B1F3A',
+          },
+          handler: async response => {
+            try {
+              const verification = await verifyDonationPayment(response)
+              setPaymentDetails(verification)
+              setSubmitted(true)
+              resolve()
+            } catch (error) {
+              reject(error)
+            }
+          },
+          modal: {
+            ondismiss: () => reject(new Error('Payment cancelled before completion.')),
+          },
+        })
+
+        checkout.open()
+      })
+    } catch (error) {
+      setErrorMessage(error.message || 'We could not start the donation payment.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <>
-      <section style={S.section} className="hero-animated-bg">
+      <section id="donate" style={S.section} className="hero-animated-bg">
         {/* ── BACKGROUND ANIMATED VERTICAL LINES ────────── */}
         <div className="hero-bg-line v-line-1"></div>
         <div className="hero-bg-line v-line-2"></div>
@@ -66,13 +147,14 @@ export default function Hero() {
               {submitted ? (
                 <div style={{ textAlign: 'center', padding: '24px 0' }}>
                   <div style={{ fontSize: 44, marginBottom: 12 }}>🙏</div>
-                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: '#0A1628', marginBottom: 8 }}>
-                    Thank you!
-                  </h4>
-                  <p style={{ color: '#6B7280', fontSize: 14, marginBottom: 20 }}>
-                    We will be in touch with you soon.
+                  <h4 style={S.successTitle}>Donation received</h4>
+                  <p style={S.successText}>
+                    Your payment was securely verified with Razorpay.
                   </p>
-                  <button className="hero-donate-btn" style={S.btnDonate} onClick={() => { setSubmitted(false); setActiveAmt('') }}>
+                  {paymentDetails?.paymentId && (
+                    <p style={S.paymentMeta}>Payment ID: {paymentDetails.paymentId}</p>
+                  )}
+                  <button className="hero-donate-btn" style={S.btnDonate} onClick={resetDonation}>
                     Donate Again
                   </button>
                 </div>
@@ -99,11 +181,13 @@ export default function Hero() {
                     ))}
                   </div>
 
-                  <button type="submit" className="hero-donate-btn" style={S.btnDonate}>
+                  {errorMessage && <div style={S.errorBox}>{errorMessage}</div>}
+
+                  <button type="submit" className="hero-donate-btn" style={S.btnDonate} disabled={isSubmitting}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="donate-icon">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
-                    <span>Donate Now</span>
+                    <span>{isSubmitting ? 'Preparing Secure Checkout...' : 'Donate Now'}</span>
                   </button>
                 </form>
               )}
@@ -199,6 +283,12 @@ export default function Hero() {
           background-color: #071529 !important;
           box-shadow: 0 6px 18px rgba(11, 31, 58, 0.3), 0 0 10px rgba(255, 71, 87, 0.2) !important;
           transform: translateY(-2px);
+        }
+        .hero-donate-btn:disabled {
+          cursor: wait;
+          opacity: 0.8;
+          transform: none;
+          box-shadow: 0 4px 12px rgba(11, 31, 58, 0.15) !important;
         }
         .hero-donate-btn:hover::after {
           left: 125%;
@@ -412,6 +502,49 @@ const S = {
     background: '#0A1628',
     color: '#fff',
     borderColor: '#0A1628',
+  },
+
+  errorBox: {
+    borderRadius: 10,
+    background: '#FEF2F2',
+    border: '1px solid #FECACA',
+    color: '#991B1B',
+    fontSize: 13,
+    lineHeight: 1.5,
+    padding: '10px 12px',
+  },
+
+  successBadge: {
+    display: 'inline-block',
+    background: '#ECFDF3',
+    color: '#166534',
+    border: '1px solid #BBF7D0',
+    borderRadius: 999,
+    padding: '6px 14px',
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 14,
+    textTransform: 'uppercase',
+    letterSpacing: '0.4px',
+  },
+
+  successTitle: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: 20,
+    color: '#0A1628',
+    marginBottom: 8,
+  },
+
+  successText: {
+    color: '#6B7280',
+    fontSize: 14,
+    marginBottom: 20,
+  },
+
+  paymentMeta: {
+    color: '#4B5563',
+    fontSize: 13,
+    marginBottom: 20,
   },
 
   btnDonate: {

@@ -11,7 +11,7 @@
 import { useState, useEffect } from 'react'
 
 // ── CONFIG — change these anytime ────────────────────────────
-const PHONE   = '919846547907'   // country code + number, no + or spaces
+const PHONE   = '919447905709'   // country code + number, no + or spaces
 const MESSAGE = encodeURIComponent(
   'Hello, I would like to donate to Paradise Family & Social Welfare Trust. ' +
   'Please guide me on how I can help. 🙏'

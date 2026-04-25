@@ -99,7 +99,7 @@ export default function Contact() {
               </div>
               <h4 className="ci-title">Phone</h4>
               <p className="ci-desc">
-                +91 9846547907
+                +91 9447905709
               </p>
             </div>
 

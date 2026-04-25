@@ -60,7 +60,7 @@ export default function Contact() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span style={S.callNeed}>Call Us for Assistance</span>
-                  <a href="tel:+919846547907" style={S.callLink}>+91 9846547907</a>
+                  <a href="tel:+919447905709" style={S.callLink}>+91 9447905709</a>
                 </div>
               </div>
             </div>
